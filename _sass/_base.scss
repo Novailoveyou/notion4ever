@@ -296,12 +296,12 @@ table {
   vertical-align: middle;
 }
 
-// Code block container
-pre {
+// Code block wrapper — holds both copy button and pre
+.code-wrapper {
   position: relative;
 }
 
-// Copy button
+// Copy button — positioned relative to wrapper, not pre
 .copy-button {
   position: absolute;
   top: 5px;
@@ -316,6 +316,7 @@ pre {
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.2s;
+  z-index: 1;
 
   &:hover {
     background-color: #e5e5e5;
@@ -327,7 +328,7 @@ pre {
 }
 
 // Show copy button on hover
-pre:hover .copy-button {
+.code-wrapper:hover .copy-button {
   opacity: 1;
 }
 
