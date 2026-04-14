@@ -158,7 +158,7 @@ def information_collector(payload:dict, structured_notion: dict, page_id) -> dic
     information = dict()
     if "text" in payload:
         information['text'] = richtext_convertor(payload['text'])
-    if "icon" in payload:
+    if "icon" in payload and payload['icon'] is not None and 'emoji' in payload['icon']:
         information['icon'] = payload['icon']['emoji']
     if "checked" in payload:
         information['checked'] = payload['checked']
