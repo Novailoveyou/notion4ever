@@ -495,7 +495,7 @@ def sorting_db_entries(structured_notion: dict):
                 first_child_id = page["children"][0]
                 if "date" in structured_notion["pages"][first_child_id]:
                     structured_notion["pages"][page_id]["children"] =\
-                        sorted(page['children'], key=lambda item: structured_notion["pages"][item]["date"])
+                        sorted(page['children'], key=lambda item: structured_notion["pages"][item].get("date", ""))
             
 
 def sorting_page_by_year(structured_notion: dict):
