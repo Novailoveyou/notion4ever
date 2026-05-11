@@ -19,7 +19,8 @@ def heading_3(information:dict) -> str:
     return f"### {information['text']}"
 
 def callout(information:dict) -> str:
-    return f"{information['icon']} {information['text']}"
+    icon = information.get('icon', '💡')
+    return f"{icon} {information['text']}"
 
 def quote(information:dict) -> str:
     return f"> {information['text']}"

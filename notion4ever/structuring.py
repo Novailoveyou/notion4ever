@@ -27,6 +27,8 @@ def strip_html_tags(text):
     return text
 
 def clean_url_string(string):
+    if string is None:
+        return "untitled"
     replacements = ["$", "\\", ":", " "]
     for char in replacements:
         string = string.replace(char, "_")
@@ -184,7 +186,7 @@ def parse_headers(raw_notion: dict) -> dict:
         if "children" not in notion_pages[page_id].keys():
             notion_pages[page_id]["children"] = []
 
-        if parent_id is not None:
+        if parent_id is not None and parent_id in notion_pages:
             notion_pages[parent_id]["children"].append(page_id)
 
         # Cover
@@ -230,8 +232,9 @@ def parse_family_line(page_id: str, family_line: list, structured_notion: dict):
     """Parses the whole parental line for page with 'page_id'"""
     if structured_notion['pages'][page_id]["parent"] is not None:
         par_id = structured_notion["pages"][page_id]["parent"]
-        family_line.insert(0, par_id)
-        family_line = parse_family_line(par_id, family_line, structured_notion)
+        if par_id in structured_notion['pages']:
+            family_line.insert(0, par_id)
+            family_line = parse_family_line(par_id, family_line, structured_notion)
     
     return family_line
     
