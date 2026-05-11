@@ -98,6 +98,14 @@ def divider(information:dict) -> str:
 def blank() -> str:
     return "<br/>"
 
+def column_list(information:dict) -> str:
+    """Column list container - content handled by children"""
+    return ""
+
+def column(information:dict) -> str:
+    """Column block - content handled by children"""
+    return ""
+
 def table_row(information:list) -> list:
     """
     input: item:list = [[richtext],....]
@@ -143,7 +151,9 @@ block_type_map = {
     "divider": divider,
     "file": file,
     'table_row': table_row,
-    "video": video
+    "video": video,
+    "column_list": column_list,
+    "column": column
 }
 
 def blocks_convertor(blocks:object, structured_notion, page_id) -> str:
@@ -258,6 +268,17 @@ def block_convertor(block:object,depth=0, structured_notion={}, page_id='') -> s
                             continue
                         outcome_block += " | " + " | ".join(value) + " | " + "\n"
                     outcome_block += "\n"
+                elif block_type in ['column_list', 'column']:
+                    # Render columns as HTML divs for proper layout
+                    css_class = "column-list" if block_type == 'column_list' else "column"
+                    outcome_block = f'<div class="{css_class}" markdown="1">\n'
+                    child_blocks = block["children"]
+                    for child_block in child_blocks:
+                        if child_block['type'] == "heading_1":
+                            depth = 0
+                        block_md = block_convertor(child_block, depth, structured_notion, page_id)
+                        outcome_block += block_md
+                    outcome_block += '</div>\n\n'
                 else:
                     depth += 1
                     child_blocks = block["children"]

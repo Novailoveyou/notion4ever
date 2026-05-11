@@ -1,147 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
-  {% include '_head.html' %}
-  <body>
-    {% include '_header.html' %}
-    <main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        <article class="page">
-          <header class="page-header">
+{% include '_head.html' %}
+
+<body>
+  {% include '_header.html' %}
+  <main class="page-content" aria-label="Content">
+    <div class="wrapper">
+      <article class="page">
+        <header class="page-header">
           {% block page_header %}
-            {% block page_title %}
-            <div class="page-title" >{{ page.title }}</div>
-            {% endblock page_title %}
-            {% block page_date %}
-            <p class="page-meta">
-              <time class="dt-published" datetime="{{ page['last_edited_time'].strftime("%d %b, %Y") }}" itemprop="datePublished">
-                {% if page.date_end %}
-                Dates: {{ page['date'].strftime("%d %b, %Y") }} - {{ page['date_end'].strftime("%d %b, %Y") }}
-                {% elif page.date %}
-                Date: {{ page['date'].strftime("%d %b, %Y") }}
-                {% else %}
-                Last edited: {{ page['last_edited_time'].strftime("%d %b, %Y") }}
-                {% endif %}
-              </time>
-            </p>
-            {% endblock page_date %}
-            {% if page.type == 'db_entry' %}
-            {% if page.properties_md|length > 1 %}
-            {% block page_properties %}
-            {% include '_properties_table.html' %}
-            {% endblock page_properties %}
-            {% endif %}
-            {% endif %}
+          {% block page_title %}
+          <div class="page-title">{{ page.title }}</div>
+          {% endblock page_title %}
+          {% block page_date %}
+          <p class="page-meta">
+            <time class="dt-published" datetime="{{ page['last_edited_time'].strftime(" %d %b, %Y") }}"
+              itemprop="datePublished">
+              {% if page.date_end %}
+              Dates: {{ page['date'].strftime("%d %b, %Y") }} - {{ page['date_end'].strftime("%d %b, %Y") }}
+              {% elif page.date %}
+              Date: {{ page['date'].strftime("%d %b, %Y") }}
+              {% else %}
+              Last edited: {{ page['last_edited_time'].strftime("%d %b, %Y") }}
+              {% endif %}
+            </time>
+          </p>
+          {% endblock page_date %}
+          {% if page.type == 'db_entry' %}
+          {% if page.properties_md|length > 1 %}
+          {% block page_properties %}
+          {% include '_properties_table.html' %}
+          {% endblock page_properties %}
+          {% endif %}
+          {% endif %}
           {% endblock page_header %}
-          </header>
-          <div class="page-content">
-            {% block page_content %}
-            {% if 'db_list' in page.keys() %}
-            {% include '_list.html' %}
-            {% elif page.type == 'database' %}
-            {% include '_gallery.html' %}
-            {% else %}
-            {{ content }}
-            {% endif %}
-            {% endblock page_content %}
-          </div>
-        </article>
-      </div>
-    </main>
-    {% block footer %}
-    {% if site["include_footer"] %}
-    {% include '_footer.html' %}
-    {% endif %}
-    {% endblock footer %}
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
+        </header>
+        <div class="page-content">
+          {% block page_content %}
+          {% if 'db_list' in page.keys() %}
+          {% include '_list.html' %}
+          {% elif page.type == 'database' %}
+          {% include '_gallery.html' %}
+          {% else %}
+          {{ content | safe }}
+          {% endif %}
+          {% endblock page_content %}
+        </div>
+      </article>
+    </div>
+  </main>
+  {% block footer %}
+  {% if site["include_footer"] %}
+  {% include '_footer.html' %}
+  {% endif %}
+  {% endblock footer %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
       // Add copy buttons to all code blocks
       // Wrap each pre in a .code-wrapper so the button stays fixed
       // while the code scrolls horizontally
-      document.querySelectorAll('pre > code').forEach(function(codeBlock) {
-        var pre = codeBlock.parentNode;
+      document.querySelectorAll('pre > code').forEach(function (codeBlock) {
+        var pre = codeBlock.parentNode
 
         // Create wrapper
-        var wrapper = document.createElement('div');
-        wrapper.className = 'code-wrapper';
-        pre.parentNode.insertBefore(wrapper, pre);
-        wrapper.appendChild(pre);
+        var wrapper = document.createElement('div')
+        wrapper.className = 'code-wrapper'
+        pre.parentNode.insertBefore(wrapper, pre)
+        wrapper.appendChild(pre)
 
         // Create button inside wrapper (outside pre)
-        var button = document.createElement('button');
-        button.className = 'copy-button';
-        button.textContent = 'Copy';
-        wrapper.appendChild(button);
+        var button = document.createElement('button')
+        button.className = 'copy-button'
+        button.textContent = 'Copy'
+        wrapper.appendChild(button)
 
         // Add click handler
-        button.addEventListener('click', function() {
-          var code = codeBlock.textContent;
-          navigator.clipboard.writeText(code).then(function() {
-            button.textContent = 'Copied!';
-            button.classList.add('success');
-            setTimeout(function() {
-              button.textContent = 'Copy';
-              button.classList.remove('success');
-            }, 2000);
-          }).catch(function(err) {
-            console.error('Failed to copy:', err);
-            button.textContent = 'Error';
-            setTimeout(function() {
-              button.textContent = 'Copy';
-            }, 2000);
-          });
-        });
-      });
+        button.addEventListener('click', function () {
+          var code = codeBlock.textContent
+          navigator.clipboard.writeText(code).then(function () {
+            button.textContent = 'Copied!'
+            button.classList.add('success')
+            setTimeout(function () {
+              button.textContent = 'Copy'
+              button.classList.remove('success')
+            }, 2000)
+          }).catch(function (err) {
+            console.error('Failed to copy:', err)
+            button.textContent = 'Error'
+            setTimeout(function () {
+              button.textContent = 'Copy'
+            }, 2000)
+          })
+        })
+      })
     });
-    </script>
-    {% if site.search_index %}
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
+  </script>
+  {% if site.search_index %}
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
       // Search functionality
-      const searchIcon = document.querySelector('.search-icon');
-      const searchInput = document.getElementById('search-input');
-      const searchResults = document.getElementById('search-results');
-      
+      const searchIcon = document.querySelector('.search-icon')
+      const searchInput = document.getElementById('search-input')
+      const searchResults = document.getElementById('search-results')
+
       // Toggle search input
-      searchIcon.addEventListener('click', function() {
-        const isHidden = searchInput.style.display === 'none';
-        searchInput.style.display = isHidden ? 'block' : 'none';
-        searchResults.style.display = 'none';
+      searchIcon.addEventListener('click', function () {
+        const isHidden = searchInput.style.display === 'none'
+        searchInput.style.display = isHidden ? 'block' : 'none'
+        searchResults.style.display = 'none'
         if (isHidden) {
-          searchInput.focus();
+          searchInput.focus()
           // Load search index if not already loaded
           if (!window.searchData) {
-            loadSearchIndex();
+            loadSearchIndex()
           }
         }
-      });
+      })
 
       // Close search when clicking outside
-      document.addEventListener('click', function(e) {
+      document.addEventListener('click', function (e) {
         if (!e.target.closest('.search-container')) {
-          searchInput.style.display = 'none';
-          searchResults.style.display = 'none';
+          searchInput.style.display = 'none'
+          searchResults.style.display = 'none'
         }
-      });
+      })
 
       async function loadSearchIndex() {
         {% if site.build_locally %}
         // For local builds, use embedded data
-        window.searchData = {{ site.search_index|tojson }};
-        initializeSearch();
-        {% else %}
-        // For server builds, fetch the index file
-        try {
-          const response = await fetch('{{ site.base_url }}/{{ site.search_index }}');
-          window.searchData = await response.json();
-          initializeSearch();
-        } catch (error) {
-          console.error('Failed to load search index:', error);
-        }
-        {% endif %}
+        window.searchData = {{ site.search_index | tojson }}
+      };
+      initializeSearch()
+      {% else %}
+      // For server builds, fetch the index file
+      try {
+        const response = await fetch('{{ site.base_url }}/{{ site.search_index }}')
+        window.searchData = await response.json()
+        initializeSearch()
+      } catch (error) {
+        console.error('Failed to load search index:', error)
       }
+      {% endif %}
+    }
 
-      function initializeSearch() {
+    function initializeSearch() {
         const fuseOptions = {
           keys: ['title', 'content'],
           threshold: 0.2,
@@ -149,34 +152,35 @@
           ignoreLocation: true,
           useExtendedSearch: true,
           distance: 500
-        };
-        window.fuse = new Fuse(window.searchData, fuseOptions);
+        }
+        window.fuse = new Fuse(window.searchData, fuseOptions)
 
         // Add input event listener
-        searchInput.addEventListener('input', function(e) {
-          const query = e.target.value;
+        searchInput.addEventListener('input', function (e) {
+          const query = e.target.value
           if (query.length < 2) {
-            searchResults.style.display = 'none';
-            return;
+            searchResults.style.display = 'none'
+            return
           }
 
-          const results = window.fuse.search(query);
+          const results = window.fuse.search(query)
           if (results.length > 0) {
             searchResults.innerHTML = results.slice(0, 5).map(result => `
               <div class="search-result-item" onclick="window.location.href='${result.item.url}'">
                 <div class="result-title">${result.item.title}</div>
                 <div class="result-snippet">${result.item.content.substring(0, 100)}...</div>
               </div>
-            `).join('');
-            searchResults.style.display = 'block';
+            `).join('')
+            searchResults.style.display = 'block'
           } else {
-            searchResults.innerHTML = '<div class="search-result-item">No results found</div>';
-            searchResults.style.display = 'block';
+            searchResults.innerHTML = '<div class="search-result-item">No results found</div>'
+            searchResults.style.display = 'block'
           }
-        });
+        })
       }
     });
-    </script>
-    {% endif %}
-  </body>
+  </script>
+  {% endif %}
+</body>
+
 </html>

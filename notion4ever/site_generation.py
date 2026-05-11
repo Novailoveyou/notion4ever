@@ -123,7 +123,8 @@ def generate_page(page_id: str, structured_notion: dict, config: dict):
                                                             "markdown_captions",
                                                             "pymdownx.tilde",
                                                             "pymdownx.tasklist",
-                                                            "pymdownx.superfences"], 
+                                                            "pymdownx.superfences",
+                                                            "md_in_html"], 
                                     extension_configs={
                                                     'mdx_truly_sane_lists': {
                                                         'nested_indent': 4,
@@ -133,6 +134,9 @@ def generate_page(page_id: str, structured_notion: dict, config: dict):
                                                         "clickable_checkbox": True,
                                                     }
                                                     })
+    
+    # Add CSS classes to tables for proper styling
+    html_content = html_content.replace('<table>', '<table class="simple-table">')
                                                                 
     tml = (Path(config["templates_dir"] ) / 'page.html').read_text()
     with open((config["output_dir"] / Path(local_file_location) / html_filename).resolve(), 'w+', encoding='utf-8')as f:
