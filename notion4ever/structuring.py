@@ -499,8 +499,16 @@ def sorting_db_entries(structured_notion: dict):
             
 
 def sorting_page_by_year(structured_notion: dict):
+    def normalize_datetime(date_str):
+        """Parse and normalize datetime to timezone-naive"""
+        dt = dt_parser.isoparse(date_str)
+        # Remove timezone info to make all dates naive for comparison
+        if dt.tzinfo is not None:
+            dt = dt.replace(tzinfo=None)
+        return dt
+    
     structured_notion['sorted_pages'] = \
-        {k: dt_parser.isoparse(v['date']) for k,v in structured_notion['pages'].items() if 'date' in v.keys()}
+        {k: normalize_datetime(v['date']) for k,v in structured_notion['pages'].items() if 'date' in v.keys()}
     structured_notion['sorted_pages'] = \
         {k: v for k, v in sorted(structured_notion['sorted_pages'].items(), key=lambda item: item[1], reverse=True)}
     # grouping by year

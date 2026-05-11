@@ -7,9 +7,29 @@ import logging
 import dateutil.parser as dt_parser
 from urllib.parse import urljoin
 import json
+import re
 # pip install mdx_truly_sane_lists
 # required pip install markdown-captions, pip install markdown-checklist
 # pip install pymdown-extensions
+
+def sanitize_filename(filename: str) -> str:
+    """Sanitize a string to be safe for use as a filename."""
+    if filename is None:
+        return "untitled"
+    # Remove or replace invalid characters for filenames
+    # Replace problematic characters with underscore
+    filename = re.sub(r'[<>:"/\\|?*\[\]\(\)]', '_', filename)
+    # Remove control characters
+    filename = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', filename)
+    # Trim whitespace and dots from edges
+    filename = filename.strip('. ')
+    # Limit length (keeping some buffer for extension)
+    if len(filename) > 200:
+        filename = filename[:200]
+    # Ensure we have a valid filename
+    if not filename:
+        filename = "untitled"
+    return filename
 
 def verify_templates(config: dict):
     """Verifies existense and content of sass and templates dirs."""
@@ -64,12 +84,16 @@ def str_to_dt(structured_notion: dict):
 def generate_page(page_id: str, structured_notion: dict, config: dict):
     page = structured_notion["pages"][page_id]
     page_url = page["url"]
-    md_filename = page["title"] + '.md'
+    md_filename = sanitize_filename(page["title"]) + '.md'
 
     if config["build_locally"]:
         folder = urljoin(page_url, '.')
         local_file_location = str(Path(folder).relative_to(Path(config["output_dir"]).resolve()))
-        html_filename = Path(page_url).name
+        # Sanitize each path component
+        path_parts = Path(local_file_location).parts
+        sanitized_parts = [sanitize_filename(part) for part in path_parts]
+        local_file_location = str(Path(*sanitized_parts)) if sanitized_parts else "."
+        html_filename = sanitize_filename(Path(page_url).name)
     else:
         local_file_location = page_url.lstrip(config["site_url"])
         html_filename = 'index.html'
